@@ -2,9 +2,12 @@
 #![no_std]
 #![no_main]
 
-use cortex_m_rt::entry; // The runtime
-use embedded_hal::digital::v2::OutputPin; // the `set_high/low`function
-use stm32f1xx_hal::{delay::Delay, pac, prelude::*}; // STM32F1 specific functions
+use cortex_m_rt::entry;
+// The runtime
+use embedded_hal::digital::v2::OutputPin;
+// the `set_high/low`function
+use stm32f1xx_hal::{delay::Delay, pac, prelude::*};
+// STM32F1 specific functions
 use lcd1602_rs::LCD1602; // lcd https://crates.io/crates/lcd1602-rs
 
 #[allow(unused_imports)]
@@ -27,7 +30,17 @@ fn main() -> ! {
     // Now we have access to the RCC's registers. The GPIOC can be enabled in
     // RCC_APB2ENR (Prog. Ref. Manual 8.3.7), therefore we must pass this
     // register to the `split` function.
+    let mut gpioa = dp.GPIOC.split(&mut rcc.apb0);
+    let mut gpiob = dp.GPIOC.split(&mut rcc.apb1);
     let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
+    // ################# PINS ######################
+    let mut rs_led = gpiob.pb11;
+    let mut e_led = gpiob.pb10;
+    let mut db7_led = gpioa.pa5;
+    let mut db6_led = gpioa.pa6;
+    let mut db5_led = gpioa.pa7;
+    let mut db4_led = gpiob.pb0;
+    // #############################################
     // This gives us an exclusive handle to the GPIOC peripheral. To get the
     // handle to a single pin, we need to configure the pin first. Pin C13
     // is usually connected to the Bluepills onboard LED.
