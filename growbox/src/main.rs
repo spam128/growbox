@@ -96,10 +96,10 @@ fn control_heat(measurement: dht11::Measurement,
     // The measured temperature is in tenths of degrees Celsius.
     if (measurement.temperature) < HEAT_TEMP {
         // heat on
-        heath_pin.set_low().ok();
+        heath_pin.set_high().ok();
     } else {
         // heat off
-        heath_pin.set_high().ok();
+        heath_pin.set_low().ok();
     }
     // reset error pin
     dht11_error_pin.set_low().ok();
