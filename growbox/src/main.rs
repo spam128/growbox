@@ -23,6 +23,8 @@ use dht11::Dht11;
 #[allow(unused_imports)]
 use panic_halt; // When a panic occurs, stop the microcontroller
 
+const HEAT_TEMP: i16 = 230;
+
 // This marks the entrypoint of our application. The cortex_m_rt creates some
 // startup code before this, but we don't need to worry about this
 #[entry]
@@ -52,7 +54,7 @@ fn main() -> ! {
     // This gives us an exclusive handle to the GPIOC peripheral. To get the
     // handle to a single pin, we need to configure the pin first. Pin C13
     // is usually connected to the Bluepills onboard LED.
-    let mut heath_pin = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
+    let mut heath_pin = gpioc.pc13.int(&mut gpioc.crh);
     let dht11_pin = gpioc.pc14.into_open_drain_output(&mut gpioc.crh);
     let mut dht11_error_pin = gpioc.pc15.into_push_pull_output(&mut gpioc.crh);
 
@@ -92,7 +94,7 @@ fn control_heat(measurement: dht11::Measurement,
                 heath_pin: &mut gpio::gpioc::PC13<gpio::Output<gpio::PushPull>>,
                 dht11_error_pin: &mut gpio::gpioc::PC15<gpio::Output<gpio::PushPull>>) {
     // The measured temperature is in tenths of degrees Celsius.
-    if (measurement.temperature) < 23 {
+    if (measurement.temperature) < HEAT_TEMP {
         // heat on
         heath_pin.set_low().ok();
     } else {
