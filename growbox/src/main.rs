@@ -83,10 +83,9 @@ fn main() -> ! {
             Err(_e) => {
                 dht11_error_pin.set_high().ok();
                 // heat off
-                heath_pin.set_high().ok();
+                heath_pin.set_low().ok();
             }
         };
-
         delay.delay_ms(1_000_u16);
     }
 }
