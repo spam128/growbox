@@ -39,6 +39,7 @@ fn main() -> ! {
     // once, so that the borrowchecker can ensure you don't reconfigure
     // something by accident.
     let dp = pac::Peripherals::take().unwrap();
+
     let cp = cortex_m::Peripherals::take().unwrap();
 
     // GPIO pins on the STM32F1 must be driven by the APB2 peripheral clock.
@@ -50,12 +51,19 @@ fn main() -> ! {
     // register to the `split` function.
 
     let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
+    let mut gpiob = dp.GPIOB.split(&mut rcc.apb2);
+    let gpioa = dp.GPIOA.split(&mut rcc.apb2);
 
+    // disable jtag to use pb14
+    let mut afio = dp.AFIO.constrain(&mut rcc.apb2);
+    afio.mapr.disable_jtag(gpioa.pa15, gpiob.pb3, gpiob.pb4);
     // #############################################
     // This gives us an exclusive handle to the GPIOC peripheral. To get the
     // handle to a single pin, we need to configure the pin first. Pin C13
     // is usually connected to the Bluepills onboard LED.
-    let mut heath_pin = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
+    let mut relay_power_supply = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
+    relay_power_supply.set_high().ok();
+    let mut heath_pin = gpiob.pb14.into_open_drain_output(&mut gpiob.crh);
     let dht11_pin = gpioc.pc14.into_open_drain_output(&mut gpioc.crh);
     let mut dht11_error_pin = gpioc.pc15.into_push_pull_output(&mut gpioc.crh);
 
@@ -83,7 +91,7 @@ fn main() -> ! {
             Err(_e) => {
                 dht11_error_pin.set_high().ok();
                 // heat off
-                heath_pin.set_low().ok();
+                heath_pin.set_high().ok();
             }
         };
         delay.delay_ms(1_000_u16);
@@ -91,16 +99,18 @@ fn main() -> ! {
 }
 
 fn control_heat(measurement: dht11::Measurement,
-                heath_pin: &mut gpio::gpioc::PC13<gpio::Output<gpio::PushPull>>,
+                heath_pin: &mut gpio::gpiob::PB14<gpio::Output<gpio::OpenDrain>>,
+                // heath_pin: &mut gpio::gpiob::PB14<gpio::Output<gpio::PushPull>>,
                 dht11_error_pin: &mut gpio::gpioc::PC15<gpio::Output<gpio::PushPull>>) {
     // The measured temperature is in tenths of degrees Celsius.
     if (measurement.temperature) < HEAT_TEMP - HEAT_TEMP_VARIANCE {
         // heat on
-        heath_pin.set_high().ok();
+        heath_pin.set_low().ok();
     } else if (measurement.temperature) > HEAT_TEMP + HEAT_TEMP_VARIANCE {
         // heat off
-        heath_pin.set_low().ok();
+        heath_pin.set_high().ok();
     }
+
     // reset error pin
     dht11_error_pin.set_low().ok();
 }
