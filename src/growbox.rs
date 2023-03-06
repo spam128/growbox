@@ -1,12 +1,12 @@
 #![no_std]
 #![no_main]
 
-mod heater;
-mod temp_sensor;
+use heater::HeaterAPI;
+use temp_sensor::DHT11API;
 
 struct Growbox {
-    heater_api: heater::HeaterAPI,
-    temp_sensor_api: temp_sensor::DHT11API,
+    heater_api: HeaterAPI,
+    temp_sensor_api: DHT11API,
 
     // to store target_temp and temp_variance
     extra_fields: HashMap<String, i16>,
@@ -14,8 +14,8 @@ struct Growbox {
 
 impl Growbox {
     fn new(
-        heater_api: heater::HeaterAPI,
-        temp_sensor_api: temp_sensor::DHT11API,
+        heater_api: HeaterAPI,
+        temp_sensor_api: DHT11API,
         default_target_temp: i16,
         default_temp_variance: i16,
     ) -> Self {
