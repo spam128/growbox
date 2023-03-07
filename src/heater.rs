@@ -1,6 +1,5 @@
-use dht11::Dht11;
 use embedded_hal::digital::v2::OutputPin;
-use stm32f1xx_hal::{delay::Delay, gpio, pac, prelude::*};
+use stm32f1xx_hal::{gpio};
 
 pub struct HeaterAPI {
     // pin to which heather is connected
@@ -9,10 +8,9 @@ pub struct HeaterAPI {
 }
 
 impl HeaterAPI {
-    fn heat_on(&self) {
-        self.heath_pin.set_high().ok();
-    }
-    fn heat_off(&self) {
+    pub(crate) fn heat_on(&mut self) { self.heath_pin.set_high().ok(); }
+
+    pub(crate) fn heat_off(&mut self) {
         self.heath_pin.set_low().ok();
     }
 }

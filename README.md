@@ -5,6 +5,28 @@ st-link v2.
 
 Connect ESP8266 for setting min and max temp
 
+### PINOUT
+
+Right now it is statically set, in future possible upgrade to use type casting.
+Check pinout diagram.
+
+<hr>
+
+#### DHT11 sensor
+
+DHT11 signal - PC14
+DHT11 error diod - PC15
+
+<hr>
+
+#### Heater 
+Pin connected to relay - PB14
+
+<hr>
+
+#### Wifi
+
+
 ### Instalation
 
 #### System dependecies:
