@@ -114,11 +114,9 @@ impl GrowboxAPI {
         match self.is_heat_on() {
             Some(true) => {
                 self.heat_on();
-                self.error_led_off();
             }
             Some(false) => {
                 self.heat_off();
-                self.error_led_off();
             }
             None => ()
         }
@@ -174,6 +172,7 @@ impl GrowboxAPI {
         let measurement = self.temp_sensor_api.dht11_driver.perform_measurement(&mut self.delay);
         match measurement {
             Ok(result_measurement) => {
+                self.error_led_off();
                 Some(result_measurement.temperature)
             }
             Err(_) => {

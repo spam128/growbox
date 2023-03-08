@@ -47,6 +47,21 @@ install the cross-toolchain for the STM32F1, which runs a thumbv7m-none-eabi ARM
 
 `cargo install cargo-flash`
 
+#####
+
+```commandline
+        WARN probe_rs::config::target > Using custom sequence for STM32F1/2/4/7
+       Error Failed to open the debug probe.
+
+  Caused by:  
+          0: Probe could not be created
+          1: Access denied (insufficient permissions)
+          2: Access denied (insufficient permissions)
+
+        Hint This could be a permission issue. Check our guide on how to make all probes work properly on your system: https://probe.rs/docs/getting-started/probe-setup
+```
+https://probe.rs/docs/getting-started/probe-setup/
+
 ### Build
 
 ```
