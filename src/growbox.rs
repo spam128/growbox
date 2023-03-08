@@ -15,7 +15,6 @@ use panic_halt; // When a panic occurs, stop the microcontroller
 use crate::heater::HeaterAPI;
 use crate::temp_sensor::DHT11API;
 
-
 pub(crate) struct GrowboxAPI {
     heater_api: HeaterAPI,
     temp_sensor_api: DHT11API,
@@ -91,13 +90,9 @@ impl GrowboxAPI {
         let delay = Delay::new(cp.SYST, clocks);
 
         let heather_api = HeaterAPI {
-            heath_pin: gpiob.pb14.into_open_drain_output(&mut gpiob.crh),
+            heath_pin: gpiob.pb14.into_push_pull_output(&mut gpiob.crh),
         };
-        let temp_sensor_api = DHT11API::new(
-            dht11_pin,
-            dht11_error_pin,
-        );
-
+        let temp_sensor_api = DHT11API::new(dht11_pin, dht11_error_pin);
 
         GrowboxAPI {
             heater_api: heather_api,
@@ -118,7 +113,7 @@ impl GrowboxAPI {
             Some(false) => {
                 self.heat_off();
             }
-            None => ()
+            None => (),
         }
     }
 
@@ -140,7 +135,7 @@ impl GrowboxAPI {
                     None
                 }
             }
-            None => Some(false)
+            None => Some(false),
         }
     }
 
@@ -153,7 +148,6 @@ impl GrowboxAPI {
     fn get_min_temp(&self) -> i16 {
         self.default_target_temp - self.default_temp_variance
     }
-
 
     /// turn heat on
     fn heat_on(&mut self) {
@@ -169,7 +163,10 @@ impl GrowboxAPI {
     /// if sensor is not working, return none
     /// and turn on error led
     fn get_temp(&mut self) -> Option<i16> {
-        let measurement = self.temp_sensor_api.dht11_driver.perform_measurement(&mut self.delay);
+        let measurement = self
+            .temp_sensor_api
+            .dht11_driver
+            .perform_measurement(&mut self.delay);
         match measurement {
             Ok(result_measurement) => {
                 self.error_led_off();
@@ -177,6 +174,7 @@ impl GrowboxAPI {
             }
             Err(_) => {
                 self.error_led_on();
+                self.heat_off();
                 None
             }
         }

@@ -25,7 +25,7 @@ use growbox::GrowboxAPI;
 // startup code before this, but we don't need to worry about this
 #[entry]
 fn main() -> ! {
-    let mut growbox_api = GrowboxAPI::new(240, 5);
+    let mut growbox_api = GrowboxAPI::new(280, 5);
     loop {
         growbox_api.update_heater();
         growbox_api.delay_ms(1_000_u16);

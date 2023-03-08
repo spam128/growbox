@@ -1,7 +1,7 @@
 // https://crates.io/crates/dht11
-use dht11::{Dht11};
+use dht11::Dht11;
 use embedded_hal::digital::v2::OutputPin;
-use stm32f1xx_hal::{gpio};
+use stm32f1xx_hal::gpio;
 
 pub struct DHT11API {
     pub dht11_error_pin: gpio::gpioc::PC15<gpio::Output<gpio::PushPull>>,
@@ -28,4 +28,3 @@ impl DHT11API {
         self.dht11_error_pin.set_high().ok();
     }
 }
-
