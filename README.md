@@ -1,7 +1,7 @@
 ### Description
 
 Driver to control heat and read tempareture and humidity inside growbox. Project written in rust on stm32f103C8 using
-st-link v2. 
+st-link v2.
 
 Connect ESP8266 for setting min and max temp
 
@@ -12,19 +12,15 @@ Check pinout diagram.
 
 <hr>
 
-#### DHT11 sensor
-
-DHT11 signal - PC14
-DHT11 error diod - PC15
-
-<hr>
-
-#### Heater 
-Pin connected to relay - PB14
-
-<hr>
-
-#### Wifi
+| Heater | DHT11         | ESP8266 | STM32F103C8 |
+|--------|---------------|---------|-------------|
+| Pin1   | ------------- | ------- | PB14        |
+| ------ | Signal pin    | ------- | PC14        |
+| ------ | Error diod    | ------- | PC15        |
+| ------ | ------------- | VCC     | 3.3V        |
+| ------ | ------------- | GND     | GND         |
+| ------ | ------------- | TXD     | PA3         |
+| ------ | ------------- | RXD     | PA2         |
 
 
 ### Instalation
@@ -34,11 +30,13 @@ Pin connected to relay - PB14
 - libudev
 
 installation for fedora:
+
 ```commandline
 sudo dnf install rust-libudev-devel
 ```
 
 #### Toolchain dependecies
+
 install the cross-toolchain for the STM32F1, which runs a thumbv7m-none-eabi ARM core:
 
 `rustup update`
@@ -50,13 +48,17 @@ install the cross-toolchain for the STM32F1, which runs a thumbv7m-none-eabi ARM
 `cargo install cargo-flash`
 
 ### Build
+
 ```
 cargo build --release
 ```
+
 ### Release
+
 ```
 cargo flash --chip stm32f103C8 --release
 ```
+
 ### DOCS
 
 https://docs.rs/stm32f1xx-hal/latest/stm32f1xx_hal/index.html
@@ -67,6 +69,7 @@ https://docs.rs/stm32f1xx-hal/latest/stm32f1xx_hal/index.html
 - change memory.x file
 
 ### LCD
+
 https://rastating.github.io/using-a-jhd162a-lcd-screen-with-an-arduino-uno/
 https://circuitdigest.com/microcontroller-projects/interfacing-stm32f103c8t6-blue-pill-board-with-lcd-display
 
