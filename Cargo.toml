@@ -11,15 +11,16 @@ opt-level = 'z' # turn on maximum optimizations. We only have 64kB
 lto = true      # Link-time-optimizations for further size reduction
 
 [dependencies]
-cortex-m = "^0.6.3"      # Access to the generic ARM peripherals
-cortex-m-rt = "^0.6.12"  # Startup code for the ARM Core
-embedded-hal = "^0.2.4"  # Access to generic embedded functions (`set_high`)
+cortex-m = "^0.7.6"      # Access to the generic ARM peripherals
+cortex-m-rt = "^0.7.1"  # Startup code for the ARM Core
+embedded-hal = "^0.2.7"  # Access to generic embedded functions (`set_high`)
 panic-halt = "^0.2.0"    # Panic handler
 dht11 = "0.3.1" # https://crates.io/crates/dht11
-#esp8266-hal = "0.5.1"
+nb = "1.0.0"
+unwrap-infallible = "0.1.5"
 
 # Access to the stm32f103 HAL.
 [dependencies.stm32f1xx-hal]
 # Bluepill contains a 64kB flash variant which is called "medium density"
 features = ["stm32f103", "rt", "medium"]
-version = "^0.6.1"
+version = "^0.10.0"

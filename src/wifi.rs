@@ -77,6 +77,13 @@ struct ESP8266API {
 }
 
 impl ESP8266API {
+    /// https://circuitdigest.com/microcontroller-projects/interfacing-esp8266-with-stm32f103c8-stm32-to-create-a-webserver
+    /// https://www.youtube.com/watch?v=Sd7xE52zL5U
+    ///!!!!!! https://www.youtube.com/watch?v=-p0arb42OsI&t=25s
+    /// !! https://www.youtube.com/watch?v=uuIlcX99yOs
+    /// examples: https://github.com/stm32-rs/stm32f1xx-hal/tree/master/examples
+    /// https://www.youtube.com/watch?v=o_alVYMBBco&list=PLL2SCPK5xSRWBPj-nKOVYIhxRw7C4kYeI
+    /// https://circuitdigest.com/microcontroller-projects/interfacing-esp8266-with-stm32f103c8-stm32-to-create-a-webserver
     fn at_command(&mut self, command: &[u8]) {
         for byte in command {
             match block!(self.tx.write(*byte)) {

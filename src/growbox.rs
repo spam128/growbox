@@ -61,7 +61,7 @@ impl GrowboxAPI {
         let gpioa = dp.GPIOA.split(&mut rcc.apb2);
 
         // disable jtag to use pb14
-        let mut afio = dp.AFIO.constrain(&mut rcc.apb2);
+        let mut afio = dp.AFIO.constrain();
         afio.mapr.disable_jtag(gpioa.pa15, gpiob.pb3, gpiob.pb4);
         // #############################################
         // This gives us an exclusive handle to the GPIOC peripheral. To get the

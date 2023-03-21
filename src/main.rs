@@ -8,6 +8,37 @@
 // https://jonathanklimt.de/electronics/programming/embedded-rust/rust-on-stm32-2/
 #![no_std]
 #![no_main]
+//
+// use cortex_m_rt::entry;
+//
+// #[allow(unused_imports)]
+// use panic_halt;
+//
+// // When a panic occurs, stop the microcontroller
+// mod growbox;
+// mod heater;
+// mod temp_sensor;
+// mod wifi;
+// mod env;
+//
+// use growbox::GrowboxAPI;
+//
+// // This marks the entrypoint of our application. The cortex_m_rt creates some
+// // startup code before this, but we don't need to worry about this
+// #[entry]
+// fn main() -> ! {
+//     // let mut growbox_api = GrowboxAPI::new(280, 5);
+//     loop {
+//         // growbox_api.update_heater();
+//         // growbox_api.delay_ms(1_000_u16);
+//         wifi::main()
+//     }
+// }
+
+//========================================
+
+mod env;
+
 
 use cortex_m_rt::entry;
 
@@ -15,19 +46,20 @@ use cortex_m_rt::entry;
 use panic_halt;
 
 // When a panic occurs, stop the microcontroller
-mod growbox;
-mod heater;
-mod temp_sensor;
+// mod growbox;
+// mod heater;
+// mod temp_sensor;
+mod wifi;
 
-use growbox::GrowboxAPI;
 
-// This marks the entrypoint of our application. The cortex_m_rt creates some
-// startup code before this, but we don't need to worry about this
 #[entry]
 fn main() -> ! {
-    let mut growbox_api = GrowboxAPI::new(280, 5);
+    // let mut growbox_api = GrowboxAPI::new(280, 5);
+
     loop {
-        growbox_api.update_heater();
-        growbox_api.delay_ms(1_000_u16);
+                    wifi::main();
+
+        // growbox_api.update_heater();
+        // growbox_api.delay_ms(1_000_u16);
     }
 }
