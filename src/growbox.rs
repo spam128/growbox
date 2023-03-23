@@ -2,12 +2,12 @@
 
 // The runtime
 // the `set_high/low`function
-use stm32f1xx_hal::{delay::Delay, pac, prelude::*};
+use stm32f1xx_hal::{pac, prelude::*};
 // STM32F1 specific functions
 // the `set_high/low`function
-use embedded_hal::digital::v2::OutputPin;
 // https://crates.io/crates/dht11
 // use dht11::Dht11;
+use stm32f1xx_hal::timer::delay::SysDelay;
 
 #[allow(unused_imports)]
 use panic_halt; // When a panic occurs, stop the microcontroller
@@ -18,7 +18,7 @@ use crate::temp_sensor::DHT11API;
 pub(crate) struct GrowboxAPI {
     heater_api: HeaterAPI,
     temp_sensor_api: DHT11API,
-    delay: Delay,
+    delay: SysDelay,
     // to store target_temp and temp_variance
     default_target_temp: i16,
     default_temp_variance: i16,
@@ -51,14 +51,14 @@ impl GrowboxAPI {
         // GPIO pins on the STM32F1 must be driven by the APB2 peripheral clock.
         // This must be enabled first. The HAL provides some abstractions for
         // us: First get a handle to the RCC peripheral:
-        let mut rcc = dp.RCC.constrain();
+        let rcc = dp.RCC.constrain();
         // Now we have access to the RCC's registers. The GPIOC can be enabled in
         // RCC_APB2ENR (Prog. Ref. Manual 8.3.7), therefore we must pass this
         // register to the `split` function.
 
-        let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
-        let mut gpiob = dp.GPIOB.split(&mut rcc.apb2);
-        let gpioa = dp.GPIOA.split(&mut rcc.apb2);
+        let mut gpioc = dp.GPIOC.split();
+        let mut gpiob = dp.GPIOB.split();
+        let gpioa = dp.GPIOA.split();
 
         // disable jtag to use pb14
         let mut afio = dp.AFIO.constrain();
@@ -68,7 +68,7 @@ impl GrowboxAPI {
         // handle to a single pin, we need to configure the pin first. Pin C13
         // is usually connected to the Bluepills onboard LED.
         let mut relay_power_supply = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
-        relay_power_supply.set_high().ok();
+        relay_power_supply.set_high();
 
         // let mut heath_pin = gpiob.pb14.into_open_drain_output(&mut gpiob.crh);
         let dht11_pin = gpioc.pc14.into_open_drain_output(&mut gpioc.crh);
@@ -80,14 +80,14 @@ impl GrowboxAPI {
         // need to get a handle to the FLASH peripheral first:
         let mut flash = dp.FLASH.constrain();
         // Now we can set the controllers frequency to 8 MHz:
-        let clocks = rcc.cfgr.sysclk(8.mhz()).freeze(&mut flash.acr);
+        let clocks = rcc.cfgr.freeze(&mut flash.acr);
         // The `clocks` handle ensures that the clocks are now configured and gives
         // the `Delay::new` function access to the configured frequency. With
         // this information it can later calculate how many cycles it has to
         // wait. The function also consumes the System Timer peripheral, so that no
         // other function can access it. Otherwise the timer could be reset during a
         // delay.
-        let delay = Delay::new(cp.SYST, clocks);
+        let delay = cp.SYST.delay(&clocks);
 
         let heather_api = HeaterAPI {
             heath_pin: gpiob.pb14.into_push_pull_output(&mut gpiob.crh),
@@ -117,7 +117,7 @@ impl GrowboxAPI {
         }
     }
 
-    pub fn delay_ms(&mut self, time: u16) {
+    pub fn delay_ms(&mut self, time: u32) {
         self.delay.delay_ms(time)
     }
 

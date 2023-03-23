@@ -23,10 +23,10 @@ use panic_halt;
 
 #[entry]
 fn main() -> ! {
-    let mut growbox_api = GrowboxAPI::new(280, 5);
+    let mut growbox_api = GrowboxAPI::new(260, 5);
 
     loop {
         growbox_api.update_heater();
-        growbox_api.delay_ms(1_000_u16);
+        growbox_api.delay_ms(1_000_u32);
     }
 }
