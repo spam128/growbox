@@ -3,7 +3,7 @@ use stm32f1xx_hal::gpio;
 pub struct HeaterAPI {
     // pin to which heather is connected
     // by setting high, heater is on, low is off
-    pub heath_pin: gpio::gpiob::PB14<gpio::Output<gpio::PushPull>>,
+    pub heath_pin: gpio::gpiob::PB14<gpio::Output<gpio::OpenDrain>>,
 }
 
 impl HeaterAPI {

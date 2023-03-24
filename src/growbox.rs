@@ -90,7 +90,10 @@ impl GrowboxAPI {
         let delay = cp.SYST.delay(&clocks);
 
         let heather_api = HeaterAPI {
-            heath_pin: gpiob.pb14.into_push_pull_output(&mut gpiob.crh),
+            // in my setup, the relay is connected to separate source, which is too
+            // high to use pull output, the true value stays on setting low.
+            // In drain mode, pin is set to low correctly
+            heath_pin: gpiob.pb14.into_open_drain_output(&mut gpiob.crh),
         };
         let temp_sensor_api = DHT11API::new(dht11_pin, dht11_error_pin);
 
